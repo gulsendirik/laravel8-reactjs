@@ -22,7 +22,6 @@ class CreateProductsTable extends Migration
             $table->string('barcode');
             $table->string('brand');
             $table->integer('stock')->default(0);
-            $table->string('image')->nullable();
             $table->text('text')->nullable();
             $table->double('buyingPrice')->nullable();
             $table->double('sellingPrice')->nullable();
