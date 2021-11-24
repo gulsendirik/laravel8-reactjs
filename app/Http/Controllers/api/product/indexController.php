@@ -23,7 +23,7 @@ class indexController extends Controller
     public function index()
     {
         $user = request()->user();
-        $data = Product::all();
+        $data = Product::where('userId',$user->id)->get();
         return response()->json(['success'=>true, 'user'=>$user, 'data'=>$data]);
     }
 
@@ -109,7 +109,16 @@ class indexController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = request()->user();
+        $control = Product::where('id',$id)->where('userId', $user->id)->count();
+        if($control == 0){ return response()->json(['success'=>false, 'message'=>'Ürün size ait değil']);}
+        $product = Product::where('id', $id)->with('property')->with('images')->first();
+        $categories = Category::where('userId',$user->id)->get();
+        return response()->json([
+            'success'=>true,
+            'categories'=>$categories,
+            'product'=>$product
+        ]);
     }
 
     /**
@@ -121,7 +130,66 @@ class indexController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = request()->user();
+        $control = Product::where('id',$id)->where('userId',$user->id)->count();
+        if($control == 0){ return response()->json(['success'=>false,'message'=>'Ürün size ait degil']);}
+
+        $all = $request->all();
+        $file = (isset($all['file'])) ? json_decode($all['file'],true) : [];
+        $newFile = (isset($all['newFile'])) ? $all['newFile'] : [];
+        $properties = (isset($all['property'])) ? json_decode($all['property'],true) : [];
+        Log::info(json_encode($file));
+        foreach($file as $item){
+            if(isset($item['isRemove'])){
+                $productImage = ProductImage::where('id',$item['id'])->first();
+                try {
+                    unlink(public_path($productImage->image));
+                }
+                catch(\Exception $e){
+
+                }
+                ProductImage::where('id',$item['id'])->delete();
+            }
+        }
+
+        foreach($newFile as $item){
+           
+            $upload = fileUpload::newUpload(rand(1,9000),"products",$item,0);
+            ProductImage::create([
+                'productId'=>$id,
+                'path'=>$upload
+            ]);
+        }
+
+        ProductProperty::where('productId',$id)->delete();
+        foreach($properties as $property){
+            ProductProperty::create([
+                'productId'=>$id,
+                'property'=>$property['property'],
+                'value'=>$property['value']
+            ]);
+        }
+        
+        
+        unset($all['file']);
+        unset($all['newFile']);
+        unset($all['_method']);
+        unset($all['property']);
+        $create = Product::where('id',$id)->update($all);
+        if($create){
+            
+            return response()->json([
+                'success'=>true,
+                'message'=>'Ürün Düzenleme Başarılı'
+            ]);
+        }
+        else 
+        {
+            return response()->json([
+                'success'=>false,
+                'message'=>'Ürün Eklenemedi'
+            ]);
+        }
     }
 
     /**
@@ -132,6 +200,19 @@ class indexController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = request()->user();
+        $control = Product::where('id',$id)->where('userId', $user->id)->count();
+        if($control == 0){ return response()->json(['success'=>false, 'message'=>'Ürün size ait değil']);}
+        foreach( ProductImage::where('productId', $id)->get() as $item){
+            try {
+                unlink(public_path($item->path));
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+        }
+        ProductImage::where('productId',$id)->delete();
+        ProductProperty::where('productId',$id)->delete();
+        Product::where('id',$id)->delete();
+        return response()->json(['success'=>true, 'message'=>'Silindi']);
     }
 }

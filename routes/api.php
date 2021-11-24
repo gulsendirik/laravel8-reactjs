@@ -31,4 +31,9 @@ Route::group([
     Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
     Route::post('/authenticate', [\App\Http\Controllers\AuthController::class, 'authenticate']);
     Route::resource('product', \App\Http\Controllers\api\product\indexController::class);
+    Route::resource('category', \App\Http\Controllers\api\category\indexController::class);
+    Route::resource('customer', \App\Http\Controllers\api\customer\indexController::class);
+    Route::resource('stock', \App\Http\Controllers\api\stock\indexController::class);
+    Route::post('/stock/get-customer',[\App\Http\Controllers\api\stock\indexController::class,'getCustomer']);
+
 });

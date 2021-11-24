@@ -19,7 +19,7 @@ const Index = (props) => {
     });
 
     useEffect(() => {
-        axios.get(`/api/product`,{
+        axios.get(`/api/category`,{
             headers:{
                 Authorization: 'Bearer '+ props.AuthStore.appState.user.access_token
             }
@@ -63,7 +63,7 @@ const Index = (props) => {
         })
         .then((willDelete) => {
             if(willDelete){
-                axios.delete(`/api/product/${item.id}`,{
+                axios.delete(`/api/category/${item.id}`,{
                     headers:{
                         Authorization: 'Bearer '+ props.AuthStore.appState.user.access_token
                     }
@@ -87,25 +87,16 @@ const Index = (props) => {
                     <DataTable
                     columns={
                         [
+                            
                             {
-                                name:'Model Code',
-                                selector:'modelCode',
-                                sortable:true
-                            },
-                            {
-                                name:'Barkod',
-                                selector:'barcode',
-                                sortable:true
-                            },
-                            {
-                                name:'Ürün Adı',
+                                name:'Kategori Adı',
                                 selector:'name',
                                 sortable:true
                             },
                             {
                                 name:'Düzenle',
                                 cell:(item)=> <button onClick={()=> props.history.push(({
-                                    pathname: `/urunler/duzenle/${item.id}`
+                                    pathname: `/kategori/duzenle/${item.id}`
                                 }))} className={"btn btn-primary"}>Düzenle</button>
                             },
                             {
@@ -121,10 +112,8 @@ const Index = (props) => {
                     hover={true}
                     fixedHeader
                     pagination
-                    expandableRows
-                    expandableRowsComponent={<ExpandedComponent />}
                     data={(filter.isFilter) ? filter.filteredData : data}
-                    subHeaderComponent={<SubHeaderComponent filter={filterItem} action ={{ class:'btn btn-success',uri:() => props.history.push('/urunekle'), title:'Ürün Ekle'}}/>}
+                    subHeaderComponent={<SubHeaderComponent filter={filterItem} action ={{ class:'btn btn-success',uri:() => props.history.push('/kategori/ekle'), title:'Kategori Ekle'}}/>}
                     />
                 </div>
              </div>
