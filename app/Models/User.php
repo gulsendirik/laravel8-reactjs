@@ -42,4 +42,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getPhotoAttribute(){
+        if($this->attributes['photo'] == '')
+        {
+            return "";
+        }
+        else{
+            return asset($this->attributes['photo']);
+        }
+    }
 }

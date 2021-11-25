@@ -66,7 +66,7 @@ const Layout = (props) => {
                 </Nav>
                 <Nav>
                 <NavDropdown title={user.name} id="basic-nav-dropdown">
-                <LinkContainer to="/profil">
+                <LinkContainer to="/profile">
                     <NavDropdown.Item >Profil Düzenle</NavDropdown.Item>
                  </LinkContainer>
                 

@@ -22,6 +22,8 @@ import StockIndex from "./Views/Stock/index";
 import StockCreate from "./Views/Stock/create";
 import StockEdit from "./Views/Stock/edit";
 
+import ProfileIndex from "./Views/Profile/index";
+
 const Main = () => (
     <Switch>
         <PrivateRoute exact path="/" component={FrontIndex} />
@@ -43,6 +45,8 @@ const Main = () => (
         <PrivateRoute exact path="/stok" component={StockIndex} />
         <PrivateRoute path="/stok/ekle" component={StockCreate} />
         <PrivateRoute path="/stok/duzenle/:id" component={StockEdit} />
+
+        <PrivateRoute exact path="/profile" component={ProfileIndex} />
 
     </Switch>
 );

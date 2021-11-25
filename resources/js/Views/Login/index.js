@@ -66,6 +66,7 @@ const Login = (props) => {
           }
       });
     }
+    console.log(errors);
     let arr = [];
     if(errors.length > 0 ){ 
       Object.values(errors).forEach(value => {
